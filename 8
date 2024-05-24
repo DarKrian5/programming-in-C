@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Person {
+    char firstName[50];
+    char lastName[50];
+    int birthYear;
+    char gender;
+    float height;
+};
+
+int compareByBirthYear(const void *a, const void *b) {
+    return ((struct Person*)a)->birthYear - ((struct Person*)b)->birthYear;
+}
+
+int compareByName(const void *a, const void *b) {
+    int lastNameComparison = strcmp(((struct Person*)a)->lastName, ((struct Person*)b)->lastName);
+    if (lastNameComparison == 0) {
+        return strcmp(((struct Person*)a)->firstName, ((struct Person*)b)->firstName);
+    }
+    return lastNameComparison;
+}
+
+int compareByGender(const void *a, const void *b) {
+    return ((struct Person*)a)->gender - ((struct Person*)b)->gender;
+}
+
+int compareByHeight(const void *a, const void *b) {
+    if (((struct Person*)a)->height > ((struct Person*)b)->height) {
+        return 1;
+    } else if (((struct Person*)a)->height < ((struct Person*)b)->height) {
+        return -1;
+    }
+    return 0;
+}
+
+int main() {
+    struct Person people[100];
+    int numPeople = 0;
+
+    FILE *file = fopen("people.txt", "r");
+    if (file == NULL) {
+        printf("Ошибка открытия файла.\n");
+        return 1;
+    }
+
+    while (fscanf(file, "%s %s %d %c %f", people[numPeople].firstName, people[numPeople].lastName, &people[numPeople].birthYear, &people[numPeople].gender, &people[numPeople].height) == 5) {
+        numPeople++;
+    }
+
+    fclose(file);
+
+    char sortCriteria[10];
+    printf("Введите критерий сортировки (имя/фамилия/год/пол/рост): ");
+    scanf("%s", sortCriteria);
+
+    if (strcmp(sortCriteria, "год") == 0) {
+        qsort(people, numPeople, sizeof(struct Person), compareByBirthYear);
+    } else if (strcmp(sortCriteria, "имя") == 0) {
+        qsort(people, numPeople, sizeof(struct Person), compareByName);
+    } else if (strcmp(sortCriteria, "фамилия") == 0) {
+        qsort(people, numPeople, sizeof(struct Person), compareByName);
+    } else if (strcmp(sortCriteria, "пол") == 0) {
+        qsort(people, numPeople, sizeof(struct Person), compareByGender);
+    } else if (strcmp(sortCriteria, "рост") == 0) {
+        qsort(people, numPeople, sizeof(struct Person), compareByHeight);
+    } else {
+        printf("Неверный критерий сортировки.\n");
+        return 1;
+    }
+
+    printf("Отсортированные данные:\n");
+    for (int i = 0; i < numPeople; i++) {
+        printf("%s %s %d %c %.2f\n", people[i].firstName, people[i].lastName, people[i].birthYear, people[i].gender, people[i].height);
+    }
+
+    return 0;
+}
+
+Припятько Андрей 1999 M 2
+Грилькова Елена 1985 F 1.8
+Евтушенко Павел 2001 M 1.9
