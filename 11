@@ -1,0 +1,36 @@
+#include <stdarg.h>
+#include <stdio.h>
+
+void calculate(int num, ...) {
+    va_list valist;
+    double sum = 0.0;
+    double min, max;
+    int i;
+
+    va_start(valist, num);
+
+    min = max = va_arg(valist, double);
+
+    for (i = 1; i < num; i++) {
+        double current = va_arg(valist, double);
+        sum += current;
+        if (current < min) {
+            min = current;
+        }
+        if (current > max) {
+            max = current;
+        }
+    }
+
+    va_end(valist);
+
+    printf("Сумма: %f\n", sum);
+    printf("Минимум: %f\n", min);
+    printf("Максимум: %f\n", max);
+    printf("Среднее арифметическое: %f\n", sum / num);
+}
+
+int main() {
+    calculate(5, 10.0, 20.0, 30.0, 40.0, 50.0);
+    return 0;
+}
