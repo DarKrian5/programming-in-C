@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void create_matrix(FILE *file, int size) {
+    int i, j;
+    for (i = 0; i < size; i++) {
+        for (j = 0; j < size; j++) {
+            fprintf(file, "%d ", rand() % 100);
+        }
+        fprintf(file, "\n");
+    }
+    fprintf(file, "\n");
+}
+
+void read_matrix(FILE *file, int size, int matrix[size][size]) {
+    int i, j;
+    for (i = 0; i < size; i++)
+        for (j = 0; j < size; j++)
+            fscanf(file, "%d", &matrix[i][j]);
+}
+
+int main() {
+    srand(time(0));
+    clock_t start = clock();
+
+    int size;
+    printf("Введите размер матриц: ");
+    scanf("%d", &size);
+
+    FILE *input = fopen("input.txt", "w");
+    create_matrix(input, size);
+    create_matrix(input, size);
+    fclose(input);
+
+    int matrix1[size][size], matrix2[size][size], result[size][size];
+    input = fopen("input.txt", "r");
+    read_matrix(input, size, matrix1);
+    read_matrix(input, size, matrix2);
+    fclose(input);
+
+    // TODO: добавить функции для умножения и сложения матриц
+
+    FILE *output = fopen("output.txt", "w");
+    // TODO: записать результаты в файл output.txt
+    fclose(output);
+
+    printf("Время работы программы: %f секунд\n", (double)(clock() - start) / CLOCKS_PER_SEC);
+
+    return 0;
+}
